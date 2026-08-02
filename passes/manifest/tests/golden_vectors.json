@@ -1,0 +1,212 @@
+{
+  "schema_version": "1.0.0",
+  "vectors": [
+    {
+      "name": "membership_reveal_a",
+      "manifest": {
+        "manifest_version": "1.0.0",
+        "program": {
+          "source_hash": "1111111111111111111111111111111111111111111111111111111111111111",
+          "toolchain_ver": "smaug-0.1.0+llvm18+emp-0.3.x",
+          "name": "membership_reveal_a"
+        },
+        "parties": [
+          "A",
+          "B"
+        ],
+        "inputs": [
+          {
+            "name": "x",
+            "dtype": "i32",
+            "party": "A",
+            "private": true
+          },
+          {
+            "name": "Y",
+            "dtype": "i32[]",
+            "party": "B",
+            "private": true,
+            "shape": [
+              1024
+            ]
+          },
+          {
+            "name": "N",
+            "dtype": "i32",
+            "party": "public",
+            "private": false
+          }
+        ],
+        "outputs": [
+          {
+            "name": "present",
+            "dtype": "bool",
+            "reveal_to": "A"
+          }
+        ],
+        "reveal_view": {
+          "outputs": [
+            {
+              "name": "present",
+              "reveal_to": "A",
+              "dtype": "bool",
+              "derivation": "whether A's element x is in B's set Y"
+            }
+          ],
+          "leaks": [
+            {
+              "kind": "membership_bit",
+              "to": "A",
+              "description": "A learns one bit: is x in Y"
+            }
+          ],
+          "summary": "Private membership test; only A learns whether its element is in B's set."
+        },
+        "cost": {
+          "gate_count": 0,
+          "depth": 0
+        }
+      },
+      "canonical_semantic": "{\"inputs\":[{\"dtype\":\"i32\",\"name\":\"x\",\"party\":\"A\",\"private\":true,\"shape\":null},{\"dtype\":\"i32[]\",\"name\":\"Y\",\"party\":\"B\",\"private\":true,\"shape\":[1024]},{\"dtype\":\"i32\",\"name\":\"N\",\"party\":\"public\",\"private\":false,\"shape\":null}],\"manifest_version\":\"1.0.0\",\"outputs\":[{\"dtype\":\"bool\",\"name\":\"present\",\"reveal_to\":\"A\"}],\"parties\":[\"A\",\"B\"],\"reveal_view\":{\"leaks\":[{\"kind\":\"membership_bit\",\"to\":\"A\"}],\"outputs\":[{\"dtype\":\"bool\",\"name\":\"present\",\"reveal_to\":\"A\"}]}}",
+      "expected_manifest_hash": "c18db8b6e3e5e11148b43985dbf65c60ee7e20f111ca5f12f55f7de2e342a158"
+    },
+    {
+      "name": "psi_cardinality",
+      "manifest": {
+        "manifest_version": "1.0.0",
+        "program": {
+          "source_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+          "toolchain_ver": "smaug-0.1.0+llvm18+emp-0.3.x",
+          "name": "psi_cardinality"
+        },
+        "parties": [
+          "A",
+          "B"
+        ],
+        "inputs": [
+          {
+            "name": "X",
+            "dtype": "i32[]",
+            "party": "A",
+            "private": true,
+            "shape": [
+              1024
+            ]
+          },
+          {
+            "name": "Y",
+            "dtype": "i32[]",
+            "party": "B",
+            "private": true,
+            "shape": [
+              1024
+            ]
+          },
+          {
+            "name": "N",
+            "dtype": "i32",
+            "party": "public",
+            "private": false
+          }
+        ],
+        "outputs": [
+          {
+            "name": "count",
+            "dtype": "i32",
+            "reveal_to": "both"
+          }
+        ],
+        "reveal_view": {
+          "outputs": [
+            {
+              "name": "count",
+              "reveal_to": "both",
+              "dtype": "i32",
+              "derivation": "number of elements of A's set X that also appear in B's set Y"
+            }
+          ],
+          "leaks": [
+            {
+              "kind": "cardinality",
+              "to": "both",
+              "description": "reveals |X ∩ Y| to both parties; which elements matched is not revealed"
+            }
+          ],
+          "summary": "Size of the intersection of A's set X and B's set Y; both learn only the count."
+        },
+        "cost": {
+          "gate_count": 0,
+          "depth": 0
+        }
+      },
+      "canonical_semantic": "{\"inputs\":[{\"dtype\":\"i32[]\",\"name\":\"X\",\"party\":\"A\",\"private\":true,\"shape\":[1024]},{\"dtype\":\"i32[]\",\"name\":\"Y\",\"party\":\"B\",\"private\":true,\"shape\":[1024]},{\"dtype\":\"i32\",\"name\":\"N\",\"party\":\"public\",\"private\":false,\"shape\":null}],\"manifest_version\":\"1.0.0\",\"outputs\":[{\"dtype\":\"i32\",\"name\":\"count\",\"reveal_to\":\"both\"}],\"parties\":[\"A\",\"B\"],\"reveal_view\":{\"leaks\":[{\"kind\":\"cardinality\",\"to\":\"both\"}],\"outputs\":[{\"dtype\":\"i32\",\"name\":\"count\",\"reveal_to\":\"both\"}]}}",
+      "expected_manifest_hash": "9fc0788a5aeef619e12c58913c2de87209b63bd151b1e73134f62282f1e2e626"
+    },
+    {
+      "name": "threshold_sum",
+      "manifest": {
+        "manifest_version": "1.0.0",
+        "program": {
+          "source_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+          "toolchain_ver": "smaug-0.1.0+llvm18+emp-0.3.x",
+          "name": "threshold_sum"
+        },
+        "parties": [
+          "A",
+          "B"
+        ],
+        "inputs": [
+          {
+            "name": "xa",
+            "dtype": "i64",
+            "party": "A",
+            "private": true
+          },
+          {
+            "name": "xb",
+            "dtype": "i64",
+            "party": "B",
+            "private": true
+          },
+          {
+            "name": "threshold",
+            "dtype": "i64",
+            "party": "public",
+            "private": false
+          }
+        ],
+        "outputs": [
+          {
+            "name": "over",
+            "dtype": "bool",
+            "reveal_to": "both"
+          }
+        ],
+        "reveal_view": {
+          "outputs": [
+            {
+              "name": "over",
+              "reveal_to": "both",
+              "dtype": "bool",
+              "derivation": "whether xa + xb exceeds the public threshold"
+            }
+          ],
+          "leaks": [
+            {
+              "kind": "comparison_result",
+              "to": "both",
+              "description": "both learn one bit: is the joint sum over the threshold"
+            }
+          ],
+          "summary": "Both parties learn only whether the sum of their private values crosses a public threshold."
+        },
+        "cost": {
+          "gate_count": 0,
+          "depth": 0
+        }
+      },
+      "canonical_semantic": "{\"inputs\":[{\"dtype\":\"i64\",\"name\":\"xa\",\"party\":\"A\",\"private\":true,\"shape\":null},{\"dtype\":\"i64\",\"name\":\"xb\",\"party\":\"B\",\"private\":true,\"shape\":null},{\"dtype\":\"i64\",\"name\":\"threshold\",\"party\":\"public\",\"private\":false,\"shape\":null}],\"manifest_version\":\"1.0.0\",\"outputs\":[{\"dtype\":\"bool\",\"name\":\"over\",\"reveal_to\":\"both\"}],\"parties\":[\"A\",\"B\"],\"reveal_view\":{\"leaks\":[{\"kind\":\"comparison_result\",\"to\":\"both\"}],\"outputs\":[{\"dtype\":\"bool\",\"name\":\"over\",\"reveal_to\":\"both\"}]}}",
+      "expected_manifest_hash": "e4f0051c3219cf5dc7dc7155a23290a7370f4060d776fe852a9bc9d7d9dc6c7a"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+# Coolify deployment target for the AP3 manifest-emit service.
+#
+# Coolify (Docker Compose build pack) builds `docker/Dockerfile` at the `service`
+# stage and runs it as a long-lived, health-checked container. Assign a domain to
+# the `smaug-emit` service in the Coolify UI; it routes to port 8080. See
+# docs/coolify.md for the full setup.
+services:
+  smaug-emit:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: service
+      args:
+        # Empty => use all cores. The vectorizer TUs are memory-heavy, so cap
+        # this (e.g. 2) only on a small builder; on a large box leave it open.
+        BUILD_JOBS: ${BUILD_JOBS:-}
+    environment:
+      # Coolify generates the public URL; the app itself only needs the port.
+      - PORT=8080
+    expose:
+      - "8080"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    restart: unless-stopped

@@ -1,0 +1,16 @@
+# Keep the build context small and the image reproducible: never ship local
+# build trees, editor cruft, or OS metadata into the image.
+**/build/
+**/.git/
+**/*.o
+**/*.so
+**/*.a
+**/*_mpc
+benchmarks/*.ll
+benchmarks/data/
+test/*.ll
+**/.DS_Store
+**/.vscode/
+**/.idea/
+**/*.swp
+**/*~
