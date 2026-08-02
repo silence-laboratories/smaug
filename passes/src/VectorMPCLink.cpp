@@ -1623,7 +1623,7 @@ llvm::PreservedAnalyses VectorMPCLinkPass::run(Module &M,
           }
         }
 
-      } // end if (gc) — readArgAccess/writeArgAccess
+      } // end if (gc) - readArgAccess/writeArgAccess
 
       // Convert secret-shared mallocs to MPC-compatible buffers.
       // Runs in both gc and non-gc modes. In gc mode, creates createIntEl/

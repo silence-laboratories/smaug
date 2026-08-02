@@ -3,7 +3,7 @@
 The `service` target in [`docker/Dockerfile`](../docker/Dockerfile) builds a small
 HTTP service (`service/app.py`) on the LLVM-18 toolchain image. Deploying it gives
 a live URL that proves the compiler toolchain built correctly and that the AP3
-manifest hasher reproduces the golden vectors — testable straight from a browser.
+manifest hasher reproduces the golden vectors - testable straight from a browser.
 
 It is also the network seam `ap3-pod`'s real `CompilerBackend` calls: `POST /emit`
 → AP3 manifest.
@@ -42,7 +42,7 @@ Every push to the configured branch rebuilds and redeploys.
 ## Builder resources (important)
 
 The image installs `llvm-18-dev` and compiles the pass plugin, including Smaug's
-vendored vectorizer — this is **memory-heavy**. Building it on an undersized box
+vendored vectorizer - this is **memory-heavy**. Building it on an undersized box
 OOMs (exactly what killed the local emulated build: `exit 137`).
 
 - **Recommended builder:** x86-64, **≥ 8 GB RAM**, a few GB free disk.

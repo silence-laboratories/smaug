@@ -1,4 +1,4 @@
-# AP3 manifest core — deliberately LLVM-free so it builds and tests anywhere:
+# AP3 manifest core - deliberately LLVM-free so it builds and tests anywhere:
 # natively for a fast loop, and inside the hermetic image. The passes plugin
 # links this static lib; the RevealView LLVM pass is a thin adapter over it.
 #
@@ -19,6 +19,7 @@ add_library(ap3manifest STATIC
     src/Sha256.cpp
     src/CanonicalJson.cpp
     src/Manifest.cpp
+    src/Ap3Metadata.cpp
 )
 target_include_directories(ap3manifest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -37,4 +38,11 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
     target_include_directories(test_conformance PRIVATE tests)
     add_test(NAME conformance
              COMMAND test_conformance ${CMAKE_CURRENT_SOURCE_DIR}/tests/golden_vectors.json)
+
+    add_executable(test_ap3_metadata tests/test_ap3_metadata.cpp)
+    target_link_libraries(test_ap3_metadata PRIVATE ap3manifest)
+    target_include_directories(test_ap3_metadata PRIVATE tests)
+    add_test(NAME ap3_metadata
+             COMMAND test_ap3_metadata
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../benchmarks/metadata/psi.ll.json)
 endif()

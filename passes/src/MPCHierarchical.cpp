@@ -278,7 +278,7 @@ std::pair<Value*, Value*>* MPCHierarchicalPass::getValForTree(
 }
 
 // ============================================================
-// getConditionVals — builds private_pc / public_pc for all BBs
+// getConditionVals - builds private_pc / public_pc for all BBs
 // ============================================================
 
 void MPCHierarchicalPass::getConditionVals(Function& F) {
@@ -576,7 +576,7 @@ void MPCHierarchicalPass::updatePhiLoopHeader(BasicBlock* BB, SmallVector<BasicB
 }
 
 // ============================================================
-// runPhiCondSelRelocate — move PHICondSel instrs to pred of parent
+// runPhiCondSelRelocate - move PHICondSel instrs to pred of parent
 // ============================================================
 
 void MPCHierarchicalPass::runPhiCondSelRelocate(SmallVector<Value*>& PHICondSelIntrs, DominatorTree* DT) {
@@ -695,7 +695,7 @@ BasicBlock* MPCHierarchicalPass::visit_loop(BasicBlock* BB, SmallVector<BasicBlo
 }
 
 // ============================================================
-// transformLoop — updatePhi + updateStore + CFG visit, innermost-first.
+// transformLoop - updatePhi + updateStore + CFG visit, innermost-first.
 // ============================================================
 
 void MPCHierarchicalPass::transformLoop(Loop* L, DominatorTree* DT, PostDominatorTree* PDT) {
@@ -787,7 +787,7 @@ void MPCHierarchicalPass::runImpl(Function& F, LoopInfo* LI_, DominatorTree* DT,
 }
 
 // ============================================================
-// run — pass entry point
+// run - pass entry point
 // ============================================================
 
 llvm::PreservedAnalyses MPCHierarchicalPass::run(llvm::Function& F, llvm::FunctionAnalysisManager& FAM) {

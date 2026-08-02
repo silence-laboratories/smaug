@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# gen_toolchain_lock.sh — emit a JSON record of the *resolved* toolchain.
+# gen_toolchain_lock.sh - emit a JSON record of the *resolved* toolchain.
 #
 # Runs INSIDE the build container. Captures the exact versions and commit SHAs of
 # every component that can affect a compiled manifest, then derives a stable,

@@ -1,6 +1,6 @@
 // Clean-room SHA-256 (FIPS 180-4). Dependency-free so the AP3 manifest core is
-// buildable and testable anywhere — natively for a fast loop and inside the
-// hermetic image — without OpenSSL or LLVM. The manifest_hash is the cross-org
+// buildable and testable anywhere - natively for a fast loop and inside the
+// hermetic image - without OpenSSL or LLVM. The manifest_hash is the cross-org
 // consent anchor, so this must be byte-exact with Python's hashlib.sha256.
 #pragma once
 

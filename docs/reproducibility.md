@@ -53,8 +53,8 @@ pods will correctly *fail* to agree rather than silently consenting to different
 Byte-identical LLVM IR across builds requires stripping non-semantic, environment-derived
 metadata before hashing (handled by the emit pass + `scripts/determinism_check.sh`):
 
-- **debug info** (`!llvm.dbg.*`, `DILocation`) — embeds source paths and line tables;
-- **source filename / module identifier** — absolute build paths;
+- **debug info** (`!llvm.dbg.*`, `DILocation`) - embeds source paths and line tables;
+- **source filename / module identifier** - absolute build paths;
 - **module flags** unrelated to semantics;
 - compiler **producer** strings.
 

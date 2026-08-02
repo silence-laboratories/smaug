@@ -32,6 +32,14 @@ LOCK = f"{SMAUG}/toolchain.lock"
 CONFORMANCE_BIN = f"{SMAUG}/passes/manifest/build/test_conformance"
 GOLDEN = f"{SMAUG}/passes/manifest/tests/golden_vectors.json"
 BENCH_DIR = f"{SMAUG}/benchmarks"
+META_DIR = f"{SMAUG}/benchmarks/metadata"
+EMIT_SCRIPT = f"{SMAUG}/scripts/emit_manifest.sh"
+
+
+def benchmark_names():
+    if not os.path.isdir(BENCH_DIR):
+        return []
+    return sorted(f[:-4] for f in os.listdir(BENCH_DIR) if f.endswith(".cpp"))
 
 
 def run(cmd, timeout=120):
@@ -135,22 +143,45 @@ class Handler(BaseHTTPRequestHandler):
         })
 
     def benchmarks(self):
-        progs = []
-        if os.path.isdir(BENCH_DIR):
-            progs = sorted(
-                f[:-4] for f in os.listdir(BENCH_DIR) if f.endswith(".cpp")
-            )
-        self._json(200, {"benchmarks": progs})
+        self._json(200, {"benchmarks": benchmark_names()})
 
     def emit(self, query):
         program = (query.get("program") or ["psi"])[0]
-        # The RevealView manifest-emit pass is being wired in; until then this
-        # endpoint reports its own status rather than fabricating a manifest.
-        self._json(501, {
-            "error": "not_implemented",
+        # Whitelist against the bundled programs - never interpolate arbitrary
+        # user input into a path or command.
+        if program not in benchmark_names():
+            return self._json(404, {
+                "error": "unknown program", "program": program,
+                "available": benchmark_names(),
+            })
+        cpp = os.path.join(BENCH_DIR, f"{program}.cpp")
+        meta = os.path.join(META_DIR, f"{program}.ll.json")
+        if not os.path.exists(meta):
+            return self._json(404, {"error": "no metadata", "program": program})
+
+        out = f"/tmp/{program}.manifest.json"
+        if os.path.exists(out):
+            os.remove(out)
+        res = run([EMIT_SCRIPT, cpp, meta, out])
+        if res["rc"] != 0:
+            return self._json(500, {
+                "error": "emit failed", "program": program,
+                "detail": res["stderr"] or res["stdout"],
+            })
+        # The pass only writes a manifest when the program carries ap3 annotations.
+        if not os.path.exists(out):
+            return self._json(200, {
+                "emitted": False, "program": program,
+                "reason": "program has no \"ap3\" annotation block",
+                "detail": res["stderr"].strip(),
+            })
+        with open(out) as f:
+            manifest = json.load(f)
+        self._json(200, {
+            "emitted": True,
             "program": program,
-            "detail": "emit is pending the RevealView pass; /conformance and "
-                      "/toolchain are live. Track: ap3 Track-2 RevealView pass.",
+            "manifest_hash": manifest.get("manifest_hash"),
+            "manifest": manifest,
         })
 
 

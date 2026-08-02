@@ -30,7 +30,7 @@ ARG LLVM_VERSION=18
 ARG EMP_TOOL_REF=0.3.x
 ARG EMP_OT_REF=0.3.x
 ARG EMP_SH2PC_REF=0.3.x
-# emp-aby (Yao + GMW backends) — Smaug's fork/branch.
+# emp-aby (Yao + GMW backends) - Smaug's fork/branch.
 ARG EMP_ABY_REPO=https://github.com/radhika1601/ScalableMixedModeMPC.git
 ARG EMP_ABY_BRANCH=no-open-fhe
 
@@ -42,7 +42,7 @@ ARG SOURCE_DATE_EPOCH=0
 ARG BUILD_JOBS=
 
 # =============================================================================
-# base — common OS packages, deterministic apt
+# base - common OS packages, deterministic apt
 # =============================================================================
 FROM ${BASE_REF} AS base
 ARG SOURCE_DATE_EPOCH
@@ -70,7 +70,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /opt/smaug
 
 # =============================================================================
-# llvm — LLVM-18 dev toolchain (clang, opt, dev libs, cmake config)
+# llvm - LLVM-18 dev toolchain (clang, opt, dev libs, cmake config)
 # =============================================================================
 FROM base AS llvm
 ARG LLVM_VERSION
@@ -89,7 +89,7 @@ ENV PATH=/usr/lib/llvm-${LLVM_VERSION}/bin:${PATH}
 RUN clang-${LLVM_VERSION} --version && opt --version
 
 # =============================================================================
-# llvm-dev — TARGET: build the pass plugin only (no EMP). Fast compiler loop.
+# llvm-dev - TARGET: build the pass plugin only (no EMP). Fast compiler loop.
 # =============================================================================
 FROM llvm AS llvm-dev
 ARG LLVM_VERSION
@@ -103,16 +103,22 @@ RUN cmake -S passes -B passes/build \
         -DLLVM_18_PREFIX=/usr/lib/llvm-${LLVM_VERSION} \
         -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     && cmake --build passes/build -j"${BUILD_JOBS:-$(nproc)}"
-# Manifest core (LLVM-free) — builds the conformance test binaries the service
+# Manifest core (LLVM-free) - builds the conformance test binaries the service
 # exposes at /conformance. Cheap; no EMP, no LLVM linkage.
 RUN cmake -S passes/manifest -B passes/manifest/build -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     && cmake --build passes/manifest/build -j"${BUILD_JOBS:-$(nproc)}" \
     && ctest --test-dir passes/manifest/build --output-on-failure
+# Standalone AP3 manifest-emit plugin (libap3pass.so) - light LLVM-18 module that
+# powers `opt -passes=ap3-reveal-view`; used by the emit service and CI.
+RUN cmake -S passes/ap3 -B passes/ap3/build \
+        -DLLVM_18_PREFIX=/usr/lib/llvm-${LLVM_VERSION} \
+        -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    && cmake --build passes/ap3/build -j"${BUILD_JOBS:-$(nproc)}"
 RUN /opt/smaug/scripts/gen_toolchain_lock.sh > /opt/smaug/toolchain.lock \
     && cat /opt/smaug/toolchain.lock
 
 # =============================================================================
-# service — TARGET: manifest-emit HTTP service on the pass-dev image (Coolify).
+# service - TARGET: manifest-emit HTTP service on the pass-dev image (Coolify).
 # Long-lived, health-checked; exposes the toolchain over HTTP. No EMP: manifest
 # emission needs only LLVM + the plugin. See docs/coolify.md.
 # =============================================================================
@@ -126,7 +132,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=5 \
 CMD ["python3", "/opt/smaug/service/app.py"]
 
 # =============================================================================
-# emp — EMP toolkit (emp-tool, emp-ot, emp-sh2pc, emp-aby), pinned + installed
+# emp - EMP toolkit (emp-tool, emp-ot, emp-sh2pc, emp-aby), pinned + installed
 # =============================================================================
 FROM llvm AS emp
 ARG EMP_TOOL_REF
@@ -146,7 +152,7 @@ RUN git clone --depth 1 -b ${EMP_ABY_BRANCH} ${EMP_ABY_REPO} emp-aby \
 WORKDIR /opt/smaug
 
 # =============================================================================
-# full — TARGET (default): EMP + built runtime + built pass plugin. E2E + gate.
+# full - TARGET (default): EMP + built runtime + built pass plugin. E2E + gate.
 # =============================================================================
 FROM emp AS full
 ARG LLVM_VERSION
@@ -154,7 +160,7 @@ ARG BUILD_JOBS
 COPY runtime/ /opt/smaug/runtime/
 COPY passes/ /opt/smaug/passes/
 COPY scripts/ /opt/smaug/scripts/
-# Runtime (libmpc, libgc, libgc-opt) — links against EMP.
+# Runtime (libmpc, libgc, libgc-opt) - links against EMP.
 RUN cmake -S runtime -B runtime/build \
     && cmake --build runtime/build -j"${BUILD_JOBS:-$(nproc)}" \
     && cmake --install runtime/build

@@ -1,4 +1,4 @@
-// Minimal test harness — no external framework, so the manifest core tests build
+// Minimal test harness - no external framework, so the manifest core tests build
 // and run anywhere (natively and inside the hermetic image).
 #pragma once
 

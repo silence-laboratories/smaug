@@ -19,7 +19,33 @@
             "1": 32,
             "3": 32
         },
-        "output": 0
+        "output": 0,
+        "ap3": {
+            "entry": true,
+            "program": "psi",
+            "inputs": [
+                { "arg": 0, "name": "X", "party": "A", "dtype": "i32[]" },
+                { "arg": 1, "name": "Y", "party": "B", "dtype": "i32[]" },
+                { "arg": 2, "name": "N", "party": "public", "dtype": "i32" }
+            ],
+            "outputs": [
+                {
+                    "arg": 3,
+                    "name": "intersection",
+                    "dtype": "i32[]",
+                    "reveal_to": "both",
+                    "derivation": "elements of A's set X that also appear in B's set Y",
+                    "leaks": [
+                        {
+                            "kind": "intersection_elements",
+                            "to": "both",
+                            "description": "both parties learn which elements are shared, not just the count"
+                        }
+                    ]
+                }
+            ],
+            "summary": "Private set intersection: both parties learn the shared elements of A's set X and B's set Y."
+        }
     },
     "main": {
         "input": [],

@@ -61,9 +61,9 @@ Create a JSON file describing which function arguments are secret-shared:
 }
 ```
 
-- `input`: array of `0`/`1` flags, one per argument in order — `1` means the argument is private/secret-shared
+- `input`: array of `0`/`1` flags, one per argument in order - `1` means the argument is private/secret-shared
 - `readAccess`: maps a pointer argument's index to the index of the argument that holds its array length (omit if no pointer inputs are secret-shared)
-- `sizes`: maps a pointer argument's index to its element bit-width (32 for `int`, 8 for `char`/`bool`, 64 for `long`) — only needed for private pointer inputs
+- `sizes`: maps a pointer argument's index to its element bit-width (32 for `int`, 8 for `char`/`bool`, 64 for `long`) - only needed for private pointer inputs
 - `output`: `1` if the return value is private/secret-shared, `0` otherwise
 
 ### 3. Compile

@@ -1,8 +1,8 @@
 // The AP3 circuit manifest, C++ side. Mirrors ap3-manifest/schema/manifest.schema.json
 // (schema v1) and reproduces the manifest_hash from canonical.py byte-for-byte.
 //
-// This is the contract Smaug EMITS INTO. It is a derived summary — party-aware
-// I/O + reveal-view + integrity anchors — deliberately insufficient to
+// This is the contract Smaug EMITS INTO. It is a derived summary - party-aware
+// I/O + reveal-view + integrity anchors - deliberately insufficient to
 // reconstruct or execute the circuit. No gate list, no opcodes, no IR.
 #pragma once
 
@@ -55,7 +55,7 @@ struct Cost {                              // informational; never gates consens
 };
 
 struct Program {
-  std::string source_hash;                 // hash(source + metadata) — input anchor
+  std::string source_hash;                 // hash(source + metadata) - input anchor
   std::string toolchain_ver;               // from toolchain.lock
   std::optional<std::string> name;
 };
@@ -74,7 +74,7 @@ struct Manifest {
   // semantic_view). Excludes prose, cost, program anchors, and the hash itself.
   json::Value semanticView() const;
 
-  // sha256 hex of the canonical semantic view — the cross-org consent anchor.
+  // sha256 hex of the canonical semantic view - the cross-org consent anchor.
   std::string computeHash() const;
 
   // Full manifest as JSON (for writing manifest.json). Sets manifest_hash.

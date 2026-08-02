@@ -19,7 +19,7 @@ void Value::writeString(std::string &out, const std::string &s) {
     case '\r': out += "\\r"; break;
     default:
       if (c < 0x20) {
-        // Other control chars: \u00XX, lowercase hex — matches CPython json.
+        // Other control chars: \u00XX, lowercase hex - matches CPython json.
         out += "\\u00";
         out.push_back(hexd[c >> 4]);
         out.push_back(hexd[c & 0xf]);

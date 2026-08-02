@@ -1,5 +1,5 @@
 // Cross-language conformance: the C++ manifest core must reproduce every golden
-// vector from ap3-manifest byte-for-byte — both the canonical semantic string
+// vector from ap3-manifest byte-for-byte - both the canonical semantic string
 // and the expected manifest_hash. This is the gate that guarantees a manifest
 // emitted by Smaug (C++) hashes identically to one produced by ap3-manifest
 // (Python), which is what makes cross-org consensus sound.
