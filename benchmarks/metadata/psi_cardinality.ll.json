@@ -1,0 +1,53 @@
+{
+    "_Z15psi_cardinalityPiS_iS_": {
+        "input": [
+            1,
+            1,
+            0,
+            1
+        ],
+        "readAccess": {
+            "0": 2,
+            "1": 2
+        },
+        "writeAccess": {
+            "3": 2
+        },
+        "sizes": {
+            "0": 32,
+            "1": 32,
+            "3": 32
+        },
+        "output": 0,
+        "ap3": {
+            "entry": true,
+            "program": "psi_cardinality",
+            "inputs": [
+                { "arg": 0, "name": "X", "party": "A", "dtype": "i32[]", "shape": [1024] },
+                { "arg": 1, "name": "Y", "party": "B", "dtype": "i32[]", "shape": [1024] },
+                { "arg": 2, "name": "N", "party": "public", "dtype": "i32" }
+            ],
+            "outputs": [
+                {
+                    "arg": 3,
+                    "name": "count",
+                    "dtype": "i32",
+                    "reveal_to": "both",
+                    "derivation": "number of elements of A's set X that also appear in B's set Y",
+                    "leaks": [
+                        {
+                            "kind": "cardinality",
+                            "to": "both",
+                            "description": "the output reveals |X ∩ Y| to both parties; which specific elements matched is not revealed"
+                        }
+                    ]
+                }
+            ],
+            "summary": "Computes the size of the intersection of A's set X and B's set Y. Both parties learn only the count, not which elements matched."
+        }
+    },
+    "main": {
+        "input": [],
+        "output": 0
+    }
+}
