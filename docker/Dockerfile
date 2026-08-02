@@ -99,6 +99,7 @@ ARG BUILD_JOBS
 COPY passes/ /opt/smaug/passes/
 COPY runtime/mpc/ /opt/smaug/runtime/mpc/
 COPY scripts/ /opt/smaug/scripts/
+COPY benchmarks/ /opt/smaug/benchmarks/
 RUN cmake -S passes -B passes/build \
         -DLLVM_18_PREFIX=/usr/lib/llvm-${LLVM_VERSION} \
         -DCMAKE_BUILD_TYPE=RelWithDebInfo \
@@ -124,7 +125,6 @@ RUN /opt/smaug/scripts/gen_toolchain_lock.sh > /opt/smaug/toolchain.lock \
 # =============================================================================
 FROM llvm-dev AS service
 COPY service/ /opt/smaug/service/
-COPY benchmarks/ /opt/smaug/benchmarks/
 ENV PORT=8080 SMAUG_HOME=/opt/smaug
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=5 \
