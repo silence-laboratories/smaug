@@ -31,6 +31,7 @@ ll="$work/mod.ll"
 "$OPT" -load-pass-plugin="$PLUGIN" -passes="$PASSES" \
     --ap3-metadata-path="$META" \
     --ap3-manifest-out="$OUT" \
+    --ap3-source-hash="${AP3_SOURCE_HASH:-}" \
     --disable-output "$ll"
 
 echo "wrote $OUT"

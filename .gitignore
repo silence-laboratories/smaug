@@ -4,6 +4,9 @@ passes/build/
 runtime/build/
 benchmarks/build/
 
+# Determinism gate output (per-container-instance digest records)
+.determinism/
+
 # Compiled outputs
 *.o
 *.so

@@ -57,12 +57,23 @@ test-emit: build-passes
 	$(DOCKER) run --rm --platform $(PLATFORM) $(MOUNT) $(IMAGE) \
 	  bash -lc 'scripts/run_emit_tests.sh'
 
-determinism: build-passes
-	$(DOCKER) run --rm --platform $(PLATFORM) $(MOUNT) $(IMAGE) \
+# The gate runs against the IMAGE's own build outputs, deliberately NOT $(MOUNT).
+DET_DIR   := .determinism
+DET_MOUNT := -v "$(CURDIR)/scripts":/opt/smaug/scripts:ro -v "$(CURDIR)/$(DET_DIR)":/out
+
+determinism: image
+	rm -rf $(DET_DIR) && mkdir -p $(DET_DIR)
+	@echo "== instance 1 =="
+	$(DOCKER) run --rm --platform $(PLATFORM) $(DET_MOUNT) -e DET_OUT=/out/run1 $(IMAGE) \
 	  bash -lc 'scripts/determinism_check.sh'
+	@echo "== instance 2 (separate container) =="
+	$(DOCKER) run --rm --platform $(PLATFORM) $(DET_MOUNT) -e DET_OUT=/out/run2 $(IMAGE) \
+	  bash -lc 'scripts/determinism_check.sh'
+	$(DOCKER) run --rm --platform $(PLATFORM) $(DET_MOUNT) $(IMAGE) \
+	  bash -lc 'scripts/determinism_check.sh --compare /out/run1 /out/run2'
 
 lock: image
 	$(DOCKER) run --rm --platform $(PLATFORM) $(IMAGE) cat /opt/smaug/toolchain.lock
 
 clean:
-	rm -rf passes/build runtime/build benchmarks/build benchmarks/*.ll
+	rm -rf passes/build runtime/build benchmarks/build benchmarks/*.ll $(DET_DIR)
